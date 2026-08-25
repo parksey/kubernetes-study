@@ -1,0 +1,6 @@
+# IDE
+.idea/
+
+# 실습 중 생성되는 파일 (폴더만 유지)
+labs/linux-container/work/*
+!labs/linux-container/work/.gitkeep
