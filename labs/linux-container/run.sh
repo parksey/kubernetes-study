@@ -9,6 +9,7 @@ IMAGE=linux-lab
 
 docker build -t "$IMAGE" .
 docker run --rm -it \
+  --name linux-lab \
   --privileged \
   --cgroupns=host \
   --hostname linux-lab \

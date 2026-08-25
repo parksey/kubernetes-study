@@ -91,3 +91,49 @@ pwd => /
 
 여기가찌가 도커로 새로운 컨테이너 환경을 만들고 해당 컨테이너로 `docker exec -it /bin/sh`를 하여 root를 기반으로하는 컨테이너에 들어가는 것과 같다.
 
+## Nginx
+
+1. nginx 컨테이너 생성
+```
+docker create --name nginx nginx
+```
+
+
+2. nginx 컨테이너에 포함된 파일들을 저장할 디렉토리 생성
+기존 proejct-a했던 linux container에 추가
+```
+mkdir nginx
+
+ls => nginx  project-a
+```
+ 
+3. 파일 복사
+초기 nginx를 실행하기 위해 필요한 모든 파일들을 가져온다 생각하면됨 (테스트하기 위함)
+```
+cd labs/linux-container
+
+docker cp $(docker container ls -aq -f name=nginx):/ ./work/nginx
+```
+
+4. nginx 컨테이너가 실행될때 수행되는 명령어 확인
+```
+docker inspect $(docker container ls -aq -f name=nginx) --format='{{.Config.Cmd}}'
+```
+- [nginx -g daemon off;]
+
+5. nginx 실행
+```
+chroot nginx
+
+nginx -g "daemon off;"
+```
+
+6. 확인
+새로운 터미널에서 실행중인 컨테이너 찾기 및 컨테이너 접속
+```
+docker ps
+
+docker exec -it <<컨테이너 ID>> bash
+
+curl localhost
+```
