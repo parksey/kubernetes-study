@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 220" width="760" height="220" role="img" aria-label="nginx netns 안에서 lo가 DOWN이면 curl localhost가 lo에서 막혀 실패하고, lo를 켜면 lo를 거쳐 nginx에 도달해 성공한다">
+  <style>
+    .t-code { fill: #18202B; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+    .t-id { fill: #5B6676; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11px; }
+    .t-m { fill: #5B6676; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 12px; }
+    .t-h { fill: #18202B; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 14px; font-weight: 700; }
+    .t-bad { fill: #B5402A; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 12.5px; font-weight: 500; }
+    .t-good { fill: #2B7A47; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 12.5px; font-weight: 500; }
+    .chip { fill: #FFFFFF; stroke: #18202B; stroke-width: 1.2; }
+    .chip-acc { fill: #FFFFFF; stroke: #0E7A84; stroke-width: 1.6; }
+    .chip-off { fill: #FFFFFF; stroke: #5B6676; stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .wire { stroke: #18202B; stroke-width: 1.4; fill: none; }
+    .wire-bad { stroke: #B5402A; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+    .x { stroke: #B5402A; stroke-width: 2; }
+    .x-bg { fill: #FFFFFF; stroke: #B5402A; stroke-width: 1.5; }
+  </style>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#18202B"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="760" height="220" fill="#FFFFFF"/>
+
+  <!-- DOWN -->
+  <text x="16" y="34" class="t-h">lo DOWN</text>
+  <text x="84" y="34" class="t-m">ip netns add 직후 상태</text>
+  <rect x="16" y="48" width="140" height="48" rx="5" class="chip"/>
+  <text x="86" y="77" text-anchor="middle" class="t-code">curl localhost</text>
+  <line x1="156" y1="72" x2="276" y2="72" class="wire" marker-end="url(#ah)"/>
+  <text x="216" y="64" text-anchor="middle" class="t-id">127.0.0.1:80</text>
+  <rect x="278" y="48" width="140" height="48" rx="5" class="chip-off"/>
+  <text x="348" y="68" text-anchor="middle" class="t-code">lo</text>
+  <text x="348" y="86" text-anchor="middle" class="t-bad">DOWN</text>
+  <line x1="418" y1="72" x2="538" y2="72" class="wire-bad"/>
+  <circle cx="478" cy="72" r="10" class="x-bg"/>
+  <line x1="473" y1="67" x2="483" y2="77" class="x"/>
+  <line x1="483" y1="67" x2="473" y2="77" class="x"/>
+  <rect x="540" y="48" width="140" height="48" rx="5" class="chip-acc"/>
+  <text x="610" y="68" text-anchor="middle" class="t-code">nginx :80</text>
+  <text x="610" y="86" text-anchor="middle" class="t-id">LISTEN 중</text>
+  <text x="696" y="77" class="t-bad">실패</text>
+
+  <!-- UP -->
+  <text x="16" y="144" class="t-h">lo UP</text>
+  <text x="66" y="144" class="t-m">ip link set dev lo up 이후</text>
+  <rect x="16" y="158" width="140" height="48" rx="5" class="chip"/>
+  <text x="86" y="187" text-anchor="middle" class="t-code">curl localhost</text>
+  <line x1="156" y1="182" x2="276" y2="182" class="wire" marker-end="url(#ah)"/>
+  <text x="216" y="174" text-anchor="middle" class="t-id">127.0.0.1:80</text>
+  <rect x="278" y="158" width="140" height="48" rx="5" class="chip"/>
+  <text x="348" y="178" text-anchor="middle" class="t-code">lo</text>
+  <text x="348" y="196" text-anchor="middle" class="t-good">UP</text>
+  <line x1="418" y1="182" x2="538" y2="182" class="wire" marker-end="url(#ah)"/>
+  <text x="478" y="174" text-anchor="middle" class="t-id">전달</text>
+  <rect x="540" y="158" width="140" height="48" rx="5" class="chip-acc"/>
+  <text x="610" y="178" text-anchor="middle" class="t-code">nginx :80</text>
+  <text x="610" y="196" text-anchor="middle" class="t-id">LISTEN 중</text>
+  <text x="696" y="187" class="t-good">성공</text>
+</svg>

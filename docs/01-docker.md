@@ -137,3 +137,158 @@ docker exec -it <<컨테이너 ID>> bash
 
 curl localhost
 ```
+
+## namespace 연결
+지금까지 chroot로 `파일 시스템`만 분리했다면 이제는 그 나머지를 분리하는 과정
+네트워크 리소스를 격리하여 서로 간섭이 되지 않도록 해야한다.
+
+### namespace 종류
+| namespace | 분류 | 결과 |
+| --- | --- | --- |
+| PID | 프로세스 번호 | 안에서 `ps`를 하면 자기 프로세스만 보이고, 첫 프로세스가 PID 1 |
+| Mount | 마운트 목록 | 안에서 mount해도 바깥에 영향 없음 |
+| UTS | hostname | 안에서 hostname을 바꿔도 바깥은 그대로 |
+| Network | 네트워크 장치, IP, 포트, 라우팅 | 자기만의 `localhost`와 IP |
+| IPC | 프로세스 간 공유 메모리, 메시지 큐 | 다른 컨테이너와 공유 메모리를 못 씀 |
+| User | UID, GID | 안에서는 root(0)지만 바깥에서는 일반 사용자 |
+| Cgroup | cgroup 트리가 보이는 범위 | 자기 cgroup만 보임 |
+| Time | 시스템 부팅 후 경과 시간 | 컨테이너마다 다른 uptime (잘 안 씀) |
+
+
+### network namespace
+
+1. 새로운 네트워크 네임스페이스 생성
+```
+ip netns add nginx
+
+ip netns list
+```
+
+2. 생성한 네트워크 네임스페이스의 네트워크 디바이스 목록 확인
+```
+ip netns exec nginx ip -br link
+```
+- `lo DOWN 00:00:00:00:00:00 <LOOPBACK>` 
+
+lo(loopback) 장치가 다운되어 있다
+
+현재 까지의 상태
+```
+nginx를 켜 놓은 상태에서 
+- 해당 컨테이너에 curl localhost 가능
+- chroot nginx로 하는경우 curl localhost 가능
+
+```
+- 하나의 컨테이너에서 같은 namespace를 현재 사용중이기 때문에 전부 가능
+
+```
+ip netns exec nginx chroot nginx nginx -g "daemon off;"
+
+or
+
+ip netns exec nginx chroot nginx
+nginx -g "daemon off;"
+```
+- nginx라는 newtwork namespace로 `nginx`파일 시스템을 root로 변경하는 작업이다.
+- 이렇게 하면 기존 namespace와 분리가 되는 상태가 된다.
+
+![같은 폴더, 다른 network namespace](images/netns-filesystem-vs-kernel.svg)
+
+이후 같은 namespace로 접근하여 `curl localhost`로 해도 실패를 하게 됩니다.
+```
+ip netns exec nginx chroot nginx
+curl localhost
+```
+이렇게 해도 실패하는 이유는 namespace에 어떤 lan을 연결하지 않았기 때문입니다.
+localhost를 부르기 위해서는 loopback을 할 수 있는 lo랜카드를 올려야 합니다.
+
+
+3. 네트워크 네임스페이스의 루프백 인터페이스 구동
+```
+ip netns exec nginx ip link set dev lo up
+```
+- `lo UNKNOWN 00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP>`
+
+![lo DOWN vs UP](images/lo-down-vs-up.svg)
+
+4. 웹서버 연결 확인
+```
+ip netns exec nginx chroot nginx
+
+curl locahost
+```
+or
+```
+ip netns exec nginx curl localhost
+```
+
+5. 외부와 통신을 위한 veth 가상 랜선 추가
+
+lo랜선의 경우 namespace 안에서만 사용하는 장치라 외부에서 사용하기 위해서는 veth가 필요
+- veth는 항상 한 쌍으로 만들어진다.
+- 한쪽에서 넣은 패킷은 반대편으로 나온다.
+
+```
+ip link add veth0 type veth peer name veth1
+```
+- ip link add : 네트워크 장치 새로 만들기
+- vetho0: 장치 이름
+- type veth: 장치 종류
+- peer name veth1 : 반대쪽 장치 이름
+
+``
+ip -br link
+
+[결과]
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP>
+eth0@if15406     UP             f6:f1:52:e3:b5:0c <BROADCAST,MULTICAST,UP,LOWER_UP>
+veth1@veth0      DOWN           b6:41:32:55:9c:c5 <BROADCAST,MULTICAST,M-DOWN>
+veth0@veth1      DOWN           ea:a6:2f:04:ab:cd <BROADCAST,MULTICAST,M-DOWN>
+``
+
+6. veth1 가상 랜선을 nginx namespace로 옮기기
+```
+ip link set veth1 netns nginx
+```
+옮기고 확인하면
+```
+ip netns exec nginx ip -br link
+
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+veth1@if4        DOWN           b6:41:32:55:9c:c5 <BROADCAST,MULTICAST>
+```
+와 같이 잘 옮겨진 것을 볼 수 있다.
+
+![veth1을 nginx netns로 이동](images/veth-move-to-netns.svg)
+
+7. 각각에 ip 할당
+```
+ip addr add 192.168.1.1/24 dev veth0
+ip netns exec nginx ip addr add 192.168.1.2/24 dev veth1
+```
+
+아직까지 veth를 켜지않아서 ip가 나오지 않는다.
+```
+ip netns exec nginx chroot nginx
+hostname -I => 결과 없음
+```
+
+8. veth 가상 랜선 ON
+```
+ip link set dev veth0 up
+ip netns exec nginx ip link set dev veth1 up
+```
+- `ip -br link`, `ip netns exec nginx ip -br link` 확인
+
+```
+root@linux-lab:/environment# hostname -I
+192.168.215.3 192.168.1.1
+
+# hostname -I
+192.168.1.2 
+```
+
+9. nginx 웹 서버 실행 확인
+```
+curl 192.168.1.2
+```

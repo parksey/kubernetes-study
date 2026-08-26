@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" role="img" aria-label="두 터미널이 같은 work/nginx 폴더를 쓰지만, nginx가 연 80번 포트는 nginx netns에만 있어서 기본 netns의 curl은 연결에 실패한다">
+  <style>
+    .t { fill: #18202B; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 13px; }
+    .t-m { fill: #5B6676; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 12px; }
+    .t-code { fill: #18202B; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+    .t-id { fill: #5B6676; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11px; }
+    .t-h { fill: #18202B; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 14px; font-weight: 700; }
+    .t-acc { fill: #0E7A84; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 14px; font-weight: 700; }
+    .t-bad { fill: #B5402A; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 12.5px; font-weight: 500; }
+    .panel { fill: #F4F6F8; stroke: #CBD3DC; stroke-width: 1; }
+    .ns { fill: #FFFFFF; stroke: #CBD3DC; stroke-width: 1.5; }
+    .ns-acc { fill: #E0F0F1; stroke: #0E7A84; stroke-width: 1.5; }
+    .chip { fill: #FFFFFF; stroke: #18202B; stroke-width: 1.2; }
+    .chip-acc { fill: #FFFFFF; stroke: #0E7A84; stroke-width: 1.6; }
+    .chip-bad { fill: #FBEAE6; stroke: #B5402A; stroke-width: 1.2; stroke-dasharray: 4 3; }
+    .wire { stroke: #18202B; stroke-width: 1.4; fill: none; }
+    .wire-dash { stroke: #5B6676; stroke-width: 1.2; fill: none; stroke-dasharray: 4 4; }
+    .wire-bad { stroke: #B5402A; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+    .x { stroke: #B5402A; stroke-width: 2; }
+    .x-bg { fill: #FFFFFF; stroke: #B5402A; stroke-width: 1.5; }
+  </style>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#18202B"/>
+    </marker>
+    <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#5B6676"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="760" height="400" fill="#FFFFFF"/>
+
+  <!-- 파일시스템 -->
+  <text x="16" y="34" class="t-h">파일시스템</text>
+  <text x="96" y="34" class="t-m">공유</text>
+  <rect x="16" y="48" width="220" height="312" rx="6" class="panel"/>
+  <text x="32" y="80" class="t-code">work/nginx/</text>
+  <text x="32" y="104" class="t-code">├── usr/sbin/nginx</text>
+  <text x="32" y="128" class="t-code">├── etc/nginx/</text>
+  <text x="32" y="152" class="t-code">│   └── nginx.conf</text>
+  <text x="32" y="176" class="t-code">├── var/log/nginx/</text>
+  <text x="32" y="200" class="t-code">└── ...</text>
+  <text x="32" y="318" class="t-m">프로그램과 설정은 여기</text>
+  <text x="32" y="338" class="t-m">"80번 포트 열림"은 여기 없음</text>
+
+  <!-- 커널 -->
+  <text x="300" y="34" class="t-h">커널</text>
+  <text x="338" y="34" class="t-m">network namespace마다 따로</text>
+
+  <!-- 기본 netns -->
+  <rect x="300" y="48" width="444" height="140" rx="6" class="ns"/>
+  <text x="316" y="72" class="t-h">기본 netns</text>
+  <text x="728" y="72" text-anchor="end" class="t-id">net:[4026532904]</text>
+  <rect x="316" y="92" width="150" height="48" rx="5" class="chip"/>
+  <text x="391" y="112" text-anchor="middle" class="t">터미널 2</text>
+  <text x="391" y="130" text-anchor="middle" class="t-code">curl localhost</text>
+  <rect x="490" y="92" width="100" height="48" rx="5" class="chip"/>
+  <text x="540" y="112" text-anchor="middle" class="t-code">lo</text>
+  <text x="540" y="130" text-anchor="middle" class="t-id">127.0.0.1</text>
+  <rect x="614" y="92" width="114" height="48" rx="5" class="chip-bad"/>
+  <text x="671" y="112" text-anchor="middle" class="t-code">:80</text>
+  <text x="671" y="130" text-anchor="middle" class="t-bad">없음</text>
+  <line x1="466" y1="116" x2="488" y2="116" class="wire" marker-end="url(#ah)"/>
+  <line x1="590" y1="116" x2="612" y2="116" class="wire" marker-end="url(#ah)"/>
+  <text x="316" y="172" class="t-bad">→ 연결 실패 (Connection refused)</text>
+
+  <!-- nginx netns -->
+  <rect x="300" y="220" width="444" height="140" rx="6" class="ns-acc"/>
+  <text x="316" y="244" class="t-acc">nginx netns</text>
+  <text x="728" y="244" text-anchor="end" class="t-id">net:[4026532697]</text>
+  <rect x="316" y="264" width="150" height="48" rx="5" class="chip-acc"/>
+  <text x="391" y="284" text-anchor="middle" class="t">터미널 1</text>
+  <text x="391" y="302" text-anchor="middle" class="t-code">nginx</text>
+  <rect x="490" y="264" width="100" height="48" rx="5" class="chip"/>
+  <text x="540" y="284" text-anchor="middle" class="t-code">lo</text>
+  <text x="540" y="302" text-anchor="middle" class="t-id">켜야 동작</text>
+  <rect x="614" y="264" width="114" height="48" rx="5" class="chip-acc"/>
+  <text x="671" y="284" text-anchor="middle" class="t-code">:80</text>
+  <text x="671" y="302" text-anchor="middle" class="t-code">LISTEN</text>
+  <path d="M671 312 V330 H391 V314" class="wire" marker-end="url(#ah)"/>
+  <text x="531" y="346" text-anchor="middle" class="t-m">nginx가 커널에 요청해서 연 포트</text>
+
+  <!-- 두 netns 사이 벽 -->
+  <line x1="671" y1="142" x2="671" y2="258" class="wire-bad"/>
+  <circle cx="671" cy="204" r="10" class="x-bg"/>
+  <line x1="666" y1="199" x2="676" y2="209" class="x"/>
+  <line x1="676" y1="199" x2="666" y2="209" class="x"/>
+  <text x="688" y="208" class="t-bad">못 넘음</text>
+
+  <!-- 같은 파일 사용 -->
+  <line x1="314" y1="116" x2="238" y2="116" class="wire-dash" marker-end="url(#ahm)"/>
+  <line x1="314" y1="288" x2="238" y2="288" class="wire-dash" marker-end="url(#ahm)"/>
+  <text x="268" y="196" text-anchor="middle" class="t-m">같은</text>
+  <text x="268" y="212" text-anchor="middle" class="t-m">폴더</text>
+</svg>
