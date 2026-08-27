@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       iproute2 iptables iputils-ping \
       # 프로세스 확인: ps, pstree
       procps psmisc \
+      # cgroup: cgcreate, cgclassify, cgset, cgdelete
+      cgroup-tools \
       # chroot용 최소 rootfs 재료
       busybox-static debootstrap \
       # 시스템콜 추적, C로 직접 clone() 호출해보기

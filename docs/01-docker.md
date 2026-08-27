@@ -22,6 +22,7 @@ Mac에서는 chroot, namespace, cgroup을 직접 쓸 수 없으므로 리눅스 
 | namespace | `unshare`, `nsenter`, `lsns` |
 | 네트워크 | `ip`, `iptables`, `ping` |
 | 프로세스 확인 | `ps`, `pstree` |
+| cgroup | `cgcreate`, `cgclassify`, `cgset`, `cgdelete` |
 | chroot용 rootfs | `busybox-static`, `debootstrap` |
 | 시스템콜 | `strace`, `gcc` |
 
@@ -403,3 +404,56 @@ lsns -t pid
 ```
 
 ![PID 네임스페이스 분리 후](images/pid-ns-separated.svg)
+
+### Cgroup 리소스 분리
+`namespace`는 결국 보이는것에 대한 제한한다. 만약 하나의 컨테이너에서 cpu를 다 쓰게 된다면 다운이 되게 된다. 
+
+1. CPU 부하 발생 후 사용량 확인
+```
+unshare --pid --fork chroot /environment/ubuntu /bin/sh
+
+{
+  mknod /root/null c 1 3
+  yes > /root/null
+}
+```
+
+결과
+```
+PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND  
+    130 root      20   0   17628   6992   4776 R  99.3   0.0   0:16.41 yes
+```
+
+즉 분리된 프로세스가 전체 리소스를 전부 사용하고 있다.
+
+2. cgroup 생성
+[터미널3]
+```
+# 없으면 설치
+apt update && apt install -y cgroup-tools
+
+# ubuntu라는 cgroup 생성
+cgcreate -g cpu,memory:/ubuntu
+```
+
+결과
+```
+root@linux-lab:/sys/fs/cgroup# pwd
+/sys/fs/cgroup
+root@linux-lab:/sys/fs/cgroup# ls | grep ubuntu
+ubuntu
+```
+
+3. sh의 pid를 찾고 해당 프로세스를 ubuntu cgroup으로 옮기기
+[터미널3]
+```
+cgclassify -g cpu,memory:ubuntu {sh pid}
+```
+- `cat /sys/fs/cgroup/ubuntu/cgroup.procs`에 sh의 pid를 적는것과 같다.
+
+4. CPU 제한
+[터미널3]
+```
+cgset -r cpu.max="300000 1000000" ubuntu
+```
+- 다시 top으로 확인하면 30퍼만 사용하는 것을 볼 수 있다.
