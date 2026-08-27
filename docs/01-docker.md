@@ -292,3 +292,114 @@ root@linux-lab:/environment# hostname -I
 ```
 curl 192.168.1.2
 ```
+
+### Pid namespace
+
+1. 기본 세팅
+```
+# 터미널1
+./run.sh
+chroot environment/nginx/
+nginx -g "daemon off;"
+
+# 터미널2
+docker exec -it {id} /bin/bash
+chroot environment/ubuntu/ /bin/sh
+
+# 터미널3
+ps aux | grep nginx
+```
+- 터미널3: `root 14  0.0  0.0  14716  2132 pts/0    S+   12:42   0:00 nginx: master process nginx -g daemon off;`
+
+2. 두번째 터미널에서 첫번재 터미널에서 실행한 nginx kill
+```
+# 터미널2
+kill 14
+```
+- 터미널1의 nginx가 killed
+
+즉 현재까지 두 프로세스는 같은 namespace에 있기때문에 독립적이지 못한 상태이다.
+
+![chroot만 한 상태: 같은 PID 네임스페이스](images/pid-ns-shared.svg)
+
+3. 네임스페이스 목록 및 nginx의 PID 확인
+[네임스페이스 목록]
+```
+lsns
+```
+- `4026532694 pid 19 1 root bash`
+
+[nginx의 pid]
+```
+ps aux | grep nginx
+```
+- `root 69  0.0  0.0  14716  1592 pts/0    S+   13:04   0:00 nginx: master process nginx -g daemon off;`
+
+4. nginx가 속한 PID 네임스페이스 확인
+```
+ls -Li /proc/69/ns/pid
+```
+- `4026532694 /proc/69/ns/pid`
+
+
+lsns로 나온 `pid namespace`의 id는 `4026532694`이고 nginx의 pid(프로세스 id)를 기반으로 pid namespace id를 가져온결과 동일하다.
+
+
+5. sh pid 및 pid namespace id 확인
+```
+ps aux | grep /bin/sh
+ls -Li /proc/{pid}/ns/pid
+```
+
+모두 똑같은 id가 나오는 것을 기준으로 같은 PID 네임스페이스에 있는 것을 알 수 있다.
+
+6. proc
+proc은 커널이 프로세스와 시스템 정보를 파일 모양으로 보여주는 가상 파일 시스템
+
+`터미널2`에서 `ps`는 `/proc`을 읽어서 프로세스 목록을 만드는데 복사해 온 ubuntu 디렉토리의 /proc은 비어있어서 마운트 하기 전에는 ps가 동작하지 않는다.
+[터미널2]
+```
+chown -R root:root .
+mount -t proc proc /proc
+```
+- proc의 내용은 디스크가 만들어주기 때문에 mount로 생성
+
+7. 새로운 PID 네임스페이스
+[터미널2]
+```
+# 실행중인 프로세스는 자신의 PID 변경불가
+exit
+
+unshare --pid --fork chroot /environment/ubuntu/ /bin/sh
+
+# 다시 proc mount
+mount -t proc proc /proc
+
+# 프로세스 목록
+ps aux
+```
+- 이렇게 되면 sh pid가 1이 된 상태로 pid namespace가 분리된 것을 확인 가능
+- 터미널2에서 터미널1의 프로세스 종료 불가
+
+8. 외부에서 내부 pid 정리
+[터미널3]
+pid 네임스페이스 목록을 확인해보면 2개가 존재하는 것을 확인 가능
+```
+lsns -t pid
+
+# 결과
+4026532694 pid      19     1 root bash
+4026532798 pid       1   110 root /bin/sh
+```
+
+[터미널3]
+```
+# 외부에서 sh pid 확인
+ps aux | grep /bin/sh
+
+kill -9 {sh pid}
+
+lsns -t pid
+```
+
+![PID 네임스페이스 분리 후](images/pid-ns-separated.svg)
