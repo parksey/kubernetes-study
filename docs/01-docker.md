@@ -409,14 +409,20 @@ lsns -t pid
 `namespace`는 결국 보이는것에 대한 제한한다. 만약 하나의 컨테이너에서 cpu를 다 쓰게 된다면 다운이 되게 된다. 
 
 1. CPU 부하 발생 후 사용량 확인
+
+chroot한 ubuntu 디렉토리의 `/dev`는 비어 있어서 `/dev/null`이 없다. chroot 하기 전에 바깥의 `/dev`를 연결해둔다.
 ```
+# 터미널2 (chroot 전)
+mount --bind /dev /environment/ubuntu/dev
+
 unshare --pid --fork chroot /environment/ubuntu /bin/sh
 
-{
-  mknod /root/null c 1 3
-  yes > /root/null
-}
+yes > /dev/null
 ```
+
+> 주의: 원래 실습처럼 `mknod /root/null c 1 3`로 null 장치를 만들면 안 된다.
+> `work/`는 Mac 폴더를 마운트한 것이라 장치 파일이 동작하지 않고 일반 파일이 된다.
+> `yes`가 그 파일에 계속 써서 68GB까지 커지고 Mac 디스크가 가득 찼다.
 
 결과
 ```
@@ -449,7 +455,8 @@ ubuntu
 ```
 cgclassify -g cpu,memory:ubuntu {sh pid}
 ```
-- `cat /sys/fs/cgroup/ubuntu/cgroup.procs`에 sh의 pid를 적는것과 같다.
+- `echo {sh pid} > /sys/fs/cgroup/ubuntu/cgroup.procs`와 같다.
+- sh pid는 `unshare` 줄이 아니라 그 자식인 `/bin/sh` 줄의 pid (`pstree -p {unshare pid}`로 확인)
 
 4. CPU 제한
 [터미널3]
