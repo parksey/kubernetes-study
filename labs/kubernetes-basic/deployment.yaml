@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  # 유지한 pod의 갯수
+  replicas: 3
+
+  # 어떤 파드를 관리할지
+  selector:
+    # app이름이 nginx인 것을 관리하겠다
+    matchLabels:
+      app: nginx
+  # pod의 템플릿
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.24
+          ports:
+            - containerPort: 80
