@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 690" width="1000" height="690" role="img" aria-label="동작 순서 2단계: controller-manager. Deployment → ReplicaSet → Pod 객체 생성 (nodeName 비어 있음)">
+  <style>
+    .t-h { fill: #18202B; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 13px; font-weight: 700; }
+    .t-sub { fill: #5B6676; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 11px; font-weight: 500; }
+    .t-port { fill: #5B6676; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; }
+    .t-zone-cp { fill: #2E5BC9; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+    .t-zone-wk { fill: #0B7F70; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+    .t-edge { fill: #5B6676; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 10.5px; }
+    .t-edge.on { fill: #B86E00; font-weight: 700; }
+    .t-ctr { fill: #18202B; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 9px; }
+    .t-step-n { fill: #FFFFFF; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 15px; font-weight: 700; }
+    .t-step { fill: #18202B; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 14px; font-weight: 700; }
+    .t-step-sub { fill: #5B6676; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 12px; font-weight: 500; }
+    .zone-cp { fill: none; stroke: #2E5BC9; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .zone-wk { fill: none; stroke: #0B7F70; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .cp { fill: #E6EDFB; stroke: #2E5BC9; stroke-width: 1.5; }
+    .wk { fill: #E1F3EF; stroke: #0B7F70; stroke-width: 1.5; }
+    .user { fill: #FFFFFF; stroke: #18202B; stroke-width: 1.5; }
+    .pod { fill: #FFFFFF; stroke: #0B7F70; stroke-width: 1.5; }
+    .ctr { fill: #E1F3EF; stroke: #0B7F70; stroke-width: 1; }
+    .on-box { fill: #FFF1D9; stroke: #C77700; stroke-width: 2.5; }
+    .edge { fill: none; stroke: #7C8894; stroke-width: 1.5; }
+    .edge.on { stroke: #C77700; stroke-width: 2.5; }
+    .watch { stroke-dasharray: 5 4; }
+    .dim { opacity: .25; }
+  </style>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#7C8894"/></marker>
+    <marker id="ah-on" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#C77700"/></marker>
+  </defs>
+  <rect x="0" y="0" width="1000" height="690" fill="#FFFFFF"/>
+  <rect class="zone-cp" x="180" y="70" width="640" height="200" rx="10"/>
+  <text class="t-zone-cp" x="198" y="94">CONTROL PLANE</text>
+  <rect class="zone-wk" x="20" y="350" width="460" height="320" rx="10"/>
+  <text class="t-zone-wk" x="466" y="660" text-anchor="end">WORKER NODE 1</text>
+  <rect class="zone-wk" x="520" y="350" width="460" height="320" rx="10"/>
+  <text class="t-zone-wk" x="966" y="660" text-anchor="end">WORKER NODE 2</text>
+  <path class="edge dim" d="M500 48 V120" marker-end="url(#ah)"/>
+  <path class="edge on" d="M420 175 H360" marker-start="url(#ah-on)" marker-end="url(#ah-on)"/>
+  <path class="edge watch dim" d="M580 133 H640" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <path class="edge watch on" d="M580 218 H640" marker-start="url(#ah-on)" marker-end="url(#ah-on)"/>
+  <path class="edge watch dim" d="M450 230 V300 H135 V395" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <path class="edge watch dim" d="M470 230 V320 H365 V395" marker-end="url(#ah)"/>
+  <path class="edge watch dim" d="M530 230 V320 H635 V395" marker-start="url(#ah)" marker-end="url(#ah)"/>
+  <path class="edge watch dim" d="M550 230 V300 H865 V395" marker-end="url(#ah)"/>
+  <path class="edge dim" d="M135 455 V490" marker-end="url(#ah)"/>
+  <path class="edge dim" d="M365 455 V490" marker-end="url(#ah)"/>
+  <path class="edge dim" d="M87 546 V590" marker-end="url(#ah)"/>
+  <path class="edge dim" d="M197 546 V590" marker-end="url(#ah)"/>
+  <path class="edge dim" d="M635 455 V490" marker-end="url(#ah)"/>
+  <path class="edge dim" d="M865 455 V490" marker-end="url(#ah)"/>
+  <path class="edge dim" d="M587 546 V590" marker-end="url(#ah)"/>
+  <path class="edge dim" d="M697 546 V590" marker-end="url(#ah)"/>
+  <text class="t-edge dim" x="160" y="293">Pod 명세 watch · 상태 보고</text>
+  <text class="t-edge dim" x="375" y="341">Service watch</text>
+  <text class="t-edge dim" x="645" y="341">Pod 명세 watch · 상태 보고</text>
+  <text class="t-edge dim" x="690" y="293">Service · EndpointSlice watch</text>
+  <text class="t-edge dim" x="143" y="477">CRI</text>
+  <text class="t-edge dim" x="643" y="477">CRI</text>
+  <g class="dim">
+    <rect class="user" x="440" y="8" width="120" height="40" rx="6"/>
+    <text class="t-h" x="500" y="33" text-anchor="middle">kubectl</text>
+  </g>
+  <g>
+    <rect class="on-box" x="420" y="120" width="160" height="110" rx="6"/>
+    <text class="t-h" x="500" y="160" text-anchor="middle">kube-apiserver</text>
+    <text class="t-sub" x="500" y="180" text-anchor="middle">모든 요청의 관문</text>
+    <text class="t-port" x="500" y="208" text-anchor="middle">:6443</text>
+  </g>
+  <g>
+    <rect class="on-box" x="220" y="147" width="140" height="56" rx="6"/>
+    <text class="t-h" x="290" y="171" text-anchor="middle">etcd</text>
+    <text class="t-sub" x="290" y="190" text-anchor="middle">클러스터 상태 저장소</text>
+  </g>
+  <g class="dim">
+    <rect class="cp" x="640" y="105" width="160" height="56" rx="6"/>
+    <text class="t-h" x="720" y="129" text-anchor="middle">kube-scheduler</text>
+    <text class="t-sub" x="720" y="148" text-anchor="middle">Pod를 둘 노드 결정</text>
+  </g>
+  <g>
+    <rect class="on-box" x="640" y="190" width="160" height="56" rx="6"/>
+    <text class="t-h" x="720" y="214" text-anchor="middle">controller-manager</text>
+    <text class="t-sub" x="720" y="233" text-anchor="middle">원하는 상태로 맞춤</text>
+  </g>
+  <g class="dim">
+    <rect class="wk" x="50" y="395" width="170" height="60" rx="6"/>
+    <text class="t-h" x="135" y="420" text-anchor="middle">kubelet</text>
+    <text class="t-sub" x="135" y="440" text-anchor="middle">노드 에이전트</text>
+  </g>
+  <g class="dim">
+    <rect class="wk" x="280" y="395" width="170" height="60" rx="6"/>
+    <text class="t-h" x="365" y="420" text-anchor="middle">kube-proxy</text>
+    <text class="t-sub" x="365" y="440" text-anchor="middle">Service 라우팅 관리</text>
+  </g>
+  <g class="dim">
+    <rect class="wk" x="50" y="490" width="170" height="56" rx="6"/>
+    <text class="t-h" x="135" y="514" text-anchor="middle">container runtime</text>
+    <text class="t-sub" x="135" y="533" text-anchor="middle">containerd 등</text>
+  </g>
+  <g class="dim">
+    <rect class="wk" x="280" y="490" width="170" height="56" rx="6"/>
+    <text class="t-h" x="365" y="514" text-anchor="middle">iptables / IPVS</text>
+    <text class="t-sub" x="365" y="533" text-anchor="middle">ClusterIP → Pod IP</text>
+  </g>
+  <g class="dim">
+    <rect class="wk" x="550" y="395" width="170" height="60" rx="6"/>
+    <text class="t-h" x="635" y="420" text-anchor="middle">kubelet</text>
+    <text class="t-sub" x="635" y="440" text-anchor="middle">노드 에이전트</text>
+  </g>
+  <g class="dim">
+    <rect class="wk" x="780" y="395" width="170" height="60" rx="6"/>
+    <text class="t-h" x="865" y="420" text-anchor="middle">kube-proxy</text>
+    <text class="t-sub" x="865" y="440" text-anchor="middle">Service 라우팅 관리</text>
+  </g>
+  <g class="dim">
+    <rect class="wk" x="550" y="490" width="170" height="56" rx="6"/>
+    <text class="t-h" x="635" y="514" text-anchor="middle">container runtime</text>
+    <text class="t-sub" x="635" y="533" text-anchor="middle">containerd 등</text>
+  </g>
+  <g class="dim">
+    <rect class="wk" x="780" y="490" width="170" height="56" rx="6"/>
+    <text class="t-h" x="865" y="514" text-anchor="middle">iptables / IPVS</text>
+    <text class="t-sub" x="865" y="533" text-anchor="middle">ClusterIP → Pod IP</text>
+  </g>
+  <g class="dim">
+    <rect class="pod" x="40" y="590" width="95" height="60" rx="6"/>
+    <text class="t-h" x="87" y="606" text-anchor="middle" style="font-size:11px">Pod A</text>
+    <rect class="ctr" x="45" y="616" width="38" height="24" rx="3"/><text class="t-ctr" x="64" y="631" text-anchor="middle">pause</text>
+    <rect class="ctr" x="88" y="616" width="42" height="24" rx="3"/><text class="t-ctr" x="109" y="631" text-anchor="middle">nginx</text>
+  </g>
+  <g class="dim">
+    <rect class="pod" x="150" y="590" width="95" height="60" rx="6"/>
+    <text class="t-h" x="197" y="606" text-anchor="middle" style="font-size:11px">Pod B</text>
+    <rect class="ctr" x="155" y="616" width="38" height="24" rx="3"/><text class="t-ctr" x="174" y="631" text-anchor="middle">pause</text>
+    <rect class="ctr" x="198" y="616" width="42" height="24" rx="3"/><text class="t-ctr" x="219" y="631" text-anchor="middle">api</text>
+  </g>
+  <g class="dim">
+    <rect class="pod" x="540" y="590" width="95" height="60" rx="6"/>
+    <text class="t-h" x="587" y="606" text-anchor="middle" style="font-size:11px">Pod C</text>
+    <rect class="ctr" x="545" y="616" width="38" height="24" rx="3"/><text class="t-ctr" x="564" y="631" text-anchor="middle">pause</text>
+    <rect class="ctr" x="588" y="616" width="42" height="24" rx="3"/><text class="t-ctr" x="609" y="631" text-anchor="middle">nginx</text>
+  </g>
+  <g class="dim">
+    <rect class="pod" x="650" y="590" width="95" height="60" rx="6"/>
+    <text class="t-h" x="697" y="606" text-anchor="middle" style="font-size:11px">Pod D</text>
+    <rect class="ctr" x="655" y="616" width="38" height="24" rx="3"/><text class="t-ctr" x="674" y="631" text-anchor="middle">pause</text>
+    <rect class="ctr" x="698" y="616" width="42" height="24" rx="3"/><text class="t-ctr" x="719" y="631" text-anchor="middle">db</text>
+  </g>
+  <circle cx="34" cy="28" r="16" fill="#C77700"/>
+  <text class="t-step-n" x="34" y="33" text-anchor="middle">2</text>
+  <text class="t-step" x="58" y="26">controller-manager</text>
+</svg>
