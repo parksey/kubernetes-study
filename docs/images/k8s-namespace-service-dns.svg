@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 410" width="1000" height="410" role="img" aria-label="dev namespace의 Pod A는 같은 namespace의 my-service를 이름만으로, prod namespace의 my-service는 my-service.prod.svc.cluster.local로 접근한다">
+  <style>
+    .t-h { fill: #18202B; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 14px; font-weight: 700; }
+    .t-sub { fill: #5B6676; font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; font-size: 11.5px; font-weight: 500; }
+    .t-code { fill: #18202B; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12.5px; font-weight: 700; }
+    .t-code-sub { fill: #5B6676; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11px; }
+    .t-zone-dev { fill: #2E5BC9; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+    .t-zone-prod { fill: #0B7F70; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+    .zone-dev { fill: none; stroke: #2E5BC9; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .zone-prod { fill: none; stroke: #0B7F70; stroke-width: 1.5; stroke-dasharray: 6 4; }
+    .pod { fill: #FFFFFF; stroke: #18202B; stroke-width: 1.5; }
+    .svc-dev { fill: #E6EDFB; stroke: #2E5BC9; stroke-width: 1.5; }
+    .svc-prod { fill: #E1F3EF; stroke: #0B7F70; stroke-width: 1.5; }
+    .edge { fill: none; stroke: #18202B; stroke-width: 1.6; }
+    .note-bg { fill: #F3F5F7; stroke: #D5DCE3; stroke-width: 1; }
+  </style>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#18202B"/></marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="410" fill="#FFFFFF"/>
+
+  <!-- namespace -->
+  <rect class="zone-dev" x="20" y="20" width="580" height="300" rx="10"/>
+  <text class="t-zone-dev" x="36" y="44">NAMESPACE: dev</text>
+  <rect class="zone-prod" x="640" y="20" width="340" height="300" rx="10"/>
+  <text class="t-zone-prod" x="656" y="44">NAMESPACE: prod</text>
+
+  <!-- 연결 -->
+  <path class="edge" d="M190 185 H240 V118 H428" marker-end="url(#ah)"/>
+  <text class="t-code" x="252" y="108">curl my-service</text>
+  <text class="t-sub" x="252" y="137">같은 namespace는 이름만</text>
+
+  <path class="edge" d="M190 215 H240 V262 H743" marker-end="url(#ah)"/>
+  <text class="t-code" x="252" y="252">curl my-service.prod.svc.cluster.local</text>
+  <text class="t-sub" x="252" y="281">다른 namespace는 FQDN(서비스.네임스페이스.svc.cluster.local)</text>
+
+  <!-- dev -->
+  <rect class="pod" x="60" y="170" width="130" height="60" rx="6"/>
+  <text class="t-h" x="125" y="196" text-anchor="middle">Pod A</text>
+  <text class="t-sub" x="125" y="215" text-anchor="middle">dev에서 실행</text>
+
+  <rect class="svc-dev" x="430" y="90" width="150" height="56" rx="6"/>
+  <text class="t-h" x="505" y="114" text-anchor="middle">my-service</text>
+  <text class="t-sub" x="505" y="133" text-anchor="middle">Service · dev</text>
+
+  <!-- prod -->
+  <rect class="svc-prod" x="745" y="234" width="150" height="56" rx="6"/>
+  <text class="t-h" x="820" y="258" text-anchor="middle">my-service</text>
+  <text class="t-sub" x="820" y="277" text-anchor="middle">Service · prod</text>
+
+  <!-- DNS 메모 -->
+  <rect class="note-bg" x="20" y="340" width="960" height="56" rx="8"/>
+  <text class="t-sub" x="36" y="363">Pod A의 /etc/resolv.conf</text>
+  <text class="t-code-sub" x="200" y="363">search dev.svc.cluster.local svc.cluster.local cluster.local</text>
+  <text class="t-sub" x="36" y="384">→ 이름만 쓰면 자기 namespace(dev)가 자동으로 붙어 my-service.dev.svc.cluster.local로 조회된다. 그래서 prod의 같은 이름 Service와 겹치지 않는다.</text>
+</svg>
