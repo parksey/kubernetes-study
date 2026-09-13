@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: emptydir-pod
+spec:
+  containers:
+    - name: writer
+      image: busybox
+      command: ["sh", "-c", "while true; do echo $(date) >> /data/log.txt; sleep 5; done"]
+      volumeMounts:
+        - mountPath: /data
+          name: shared-data
+    - name: reader
+      image: busybox
+      command: ["sh", "-c", "tail -f /data/log.txt"]
+      volumeMounts:
+        - mountPath: /data
+          name: shared-data
+  volumes:
+    - name: shared-data
+      emptyDir: {}
