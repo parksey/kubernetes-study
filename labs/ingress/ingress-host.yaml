@@ -1,0 +1,35 @@
+apiVersion: networking.k8s.io/v1 # networking group
+kind: Ingress
+metadata:
+  name: app-host-ingress
+  # ingress-nginx 컨트롤러가 읽는 세부 설정 (값은 항상 문자열)
+  annotations:
+    # 요청 body 최대 크기 (기본 1m) → 넘으면 413 Request Entity Too Large
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    # 백엔드 응답을 기다리는 시간(초)
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "60"
+spec:
+  ingressClassName: nginx
+  rules:
+    # Host 헤더가 app1.local 인 요청 → app1-service
+    - host: app1.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app1-service
+                port:
+                  number: 80
+    # Host 헤더가 app2.local 인 요청 → app2-service
+    - host: app2.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app2-service
+                port:
+                  number: 80

@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1 # networking group
+kind: Ingress
+metadata:
+  name: app-redirect-ingress
+  annotations:
+    # 이 Ingress로 온 요청은 백엔드로 보내지 않고 아래 URL로 리다이렉트 (301 영구)
+    # annotation은 Ingress 전체에 적용되므로 리다이렉트할 경로만 따로 Ingress를 만든다
+    nginx.ingress.kubernetes.io/permanent-redirect: "http://localhost/app1"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          # /api1 으로 들어오면 /app1 으로 보낸다
+          - path: /api1
+            pathType: Prefix
+            backend:
+              service:
+                name: app1-service # 리다이렉트되므로 실제로 호출되지는 않음
+                port:
+                  number: 80
