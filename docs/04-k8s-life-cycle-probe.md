@@ -21,6 +21,7 @@ kubelet → (주기적으로) 컨테이너에 검사 요청 → 성공 / 실패
 - Probe를 실행하는 주체는 컨트롤 플레인이 아니라 각 노드의 kubelet
 
 ## 검사 방법
+
 | 방법 | 성공 조건 | 예시 |
 |---|---|---|
 | httpGet | HTTP 응답 코드 200~399 | `GET /health` |
@@ -98,6 +99,7 @@ readinessProbe:
 - 보통 StatefulSet + PVC로 운영하고, 재시작 비용(데이터 복구, 재동기화)이 커서 liveness를 너무 깐깐하게 잡지 않는다
 
 ## 공통 설정
+
 | 필드 | 기본값 | 의미 |
 |---|---|---|
 | initialDelaySeconds | 0 | 컨테이너 시작 후 첫 검사까지 대기 시간 |
@@ -183,7 +185,8 @@ startupProbe:
 ```
 
 ## 비교
-| | Liveness | Readiness | Startup |
+
+| 구분 | Liveness | Readiness | Startup |
 |---|---|---|---|
 | 질문 | 살아있나? | 트래픽 받을 수 있나? | 시작이 끝났나? |
 | 실패 시 | 컨테이너 재시작 | Service에서 제외 (재시작 X) | 컨테이너 재시작 |
