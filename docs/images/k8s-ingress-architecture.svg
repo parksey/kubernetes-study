@@ -1,0 +1,149 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 730" width="1200" height="730" role="img" aria-label="맥에서 minikube 노드의 80번 hostPort로 들어와 ingress-nginx 컨트롤러 pod가 Ingress 규칙에 따라 ClusterIP Service인 app1, app2로 보내는 구성도">
+  <style>
+    text { font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif; }
+    .h { fill: #17201E; font-size: 15px; font-weight: 700; }
+    .m { fill: #17201E; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; }
+    .m.b { font-weight: 700; }
+    .s { fill: #5A6763; font-size: 11.5px; }
+    .eb { fill: #1F6F63; font-size: 10px; font-weight: 700; letter-spacing: .08em; }
+    .zone { fill: none; stroke: #5A6763; stroke-width: 1.4; stroke-dasharray: 7 5; }
+    .zone-t { fill: #5A6763; font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+    .ns { fill: #F6F7F6; stroke: #D7DEDB; stroke-width: 1.2; }
+    .ns-t { fill: #5A6763; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; font-weight: 700; }
+    .box { fill: #FFFFFF; stroke: #17201E; stroke-width: 1.3; }
+    .box.acc { stroke: #1F6F63; stroke-width: 2; fill: #E3F0EC; }
+    .pod { fill: #FFFFFF; stroke: #D7DEDB; stroke-width: 1.3; }
+    .rule { fill: #FBF1DC; stroke: #9A6400; stroke-width: 1.2; }
+    .legend { fill: #FFFFFF; stroke: #D7DEDB; stroke-width: 1; }
+    .port-ok { fill: #E4F3E8; stroke: #1E7A3E; stroke-width: 1.2; }
+    .port-bad { fill: #FBE8E6; stroke: #B4322A; stroke-width: 1.2; }
+    .ok-t { fill: #1E7A3E; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; font-weight: 700; }
+    .bad-t { fill: #B4322A; font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 11.5px; font-weight: 700; }
+    .flow { fill: none; stroke: #17201E; stroke-width: 1.6; }
+    .watch { fill: none; stroke: #9A6400; stroke-width: 1.5; stroke-dasharray: 5 4; }
+    .ah { fill: #17201E; }
+    .ahm { fill: #9A6400; }
+  </style>
+  <rect x="0" y="0" width="1200" height="730" fill="#FFFFFF"/>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="ah"/></marker>
+    <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="ahm"/></marker>
+  </defs>
+
+  <!-- 노드 -->
+  <rect class="zone" x="190" y="20" width="1000" height="700" rx="12"/>
+  <text class="zone-t" x="210" y="46">MINIKUBE 노드 · study · 192.168.49.2</text>
+
+  <!-- 맥 -->
+  <rect class="box" x="10" y="150" width="140" height="90" rx="8"/>
+  <text class="h" x="80" y="180" text-anchor="middle">내 맥</text>
+  <text class="m" x="80" y="202" text-anchor="middle">curl</text>
+  <text class="m" x="80" y="220" text-anchor="middle">192.168.49.2/app1</text>
+
+  <!-- 노드 포트 -->
+  <rect class="port-ok" x="160" y="181" width="110" height="28" rx="14"/>
+  <text class="ok-t" x="215" y="200" text-anchor="middle">:80 hostPort</text>
+  <rect class="port-ok" x="160" y="221" width="110" height="28" rx="14"/>
+  <text class="ok-t" x="215" y="240" text-anchor="middle">:443 hostPort</text>
+  <text class="s" x="215" y="272" text-anchor="middle">NodePort 없음</text>
+
+  <!-- ns ingress-nginx -->
+  <rect class="ns" x="290" y="70" width="400" height="360" rx="10"/>
+  <text class="ns-t" x="306" y="94">namespace: ingress-nginx</text>
+
+  <rect class="box acc" x="305" y="125" width="180" height="140" rx="8"/>
+  <text class="eb" x="320" y="148">POD · 컨트롤러</text>
+  <text class="h" x="320" y="172">nginx</text>
+  <text class="m" x="320" y="194">10.244.0.73</text>
+  <text class="s" x="320" y="216">…-5dfc9b7855-84jqm</text>
+  <text class="s" x="320" y="238">Ingress 규칙대로</text>
+  <text class="s" x="320" y="254">요청을 나눠 보냄</text>
+
+  <rect class="box" x="305" y="300" width="180" height="110" rx="8"/>
+  <text class="eb" x="320" y="323">SERVICE · CLUSTERIP</text>
+  <text class="m b" x="316" y="345" style="font-size:10.5px">ingress-nginx-controller</text>
+  <text class="m" x="320" y="367">10.105.6.163</text>
+  <text class="s" x="320" y="389">80, 443 · NodePort 없음</text>
+  <text class="s" x="500" y="336">바깥 요청은</text>
+<text class="s" x="500" y="354">이 Service를</text>
+<text class="s" x="500" y="372">거치지 않음</text>
+<text class="s" x="500" y="390">(hostPort 직행)</text>
+
+  <!-- ns default -->
+  <rect class="ns" x="710" y="70" width="465" height="635" rx="10"/>
+  <text class="ns-t" x="726" y="94">namespace: default</text>
+
+  <rect class="box" x="725" y="105" width="155" height="84" rx="8"/>
+  <text class="eb" x="738" y="126">SERVICE</text>
+  <text class="m b" x="738" y="146">app1-service</text>
+  <text class="m" x="738" y="164">10.100.110.80</text>
+  <text class="s" x="738" y="181">ClusterIP · 80→5678</text>
+
+  <rect class="box" x="725" y="235" width="155" height="84" rx="8"/>
+  <text class="eb" x="738" y="256">SERVICE</text>
+  <text class="m b" x="738" y="276">app2-service</text>
+  <text class="m" x="738" y="294">10.96.228.109</text>
+  <text class="s" x="738" y="311">ClusterIP · 80→5678</text>
+
+  <rect class="pod" x="905" y="105" width="255" height="40" rx="6"/>
+  <text class="m b" x="917" y="121">app1-7847b4dbd5-rkr2p</text>
+  <text class="s" x="917" y="138">10.244.0.70:5678 · "hello from app1"</text>
+  <rect class="pod" x="905" y="151" width="255" height="40" rx="6"/>
+  <text class="m b" x="917" y="167">app1-7847b4dbd5-vvs6n</text>
+  <text class="s" x="917" y="184">10.244.0.71:5678</text>
+
+  <rect class="pod" x="905" y="235" width="255" height="40" rx="6"/>
+  <text class="m b" x="917" y="251">app2-97bf8755b-rcnw6</text>
+  <text class="s" x="917" y="268">10.244.0.69:5678 · "hello from app2"</text>
+  <rect class="pod" x="905" y="281" width="255" height="40" rx="6"/>
+  <text class="m b" x="917" y="297">app2-97bf8755b-xqg27</text>
+  <text class="s" x="917" y="314">10.244.0.68:5678</text>
+
+  <text class="s" x="725" y="346">※ 실제로는 컨트롤러가 Service의 EndpointSlice에서</text>
+  <text class="s" x="725" y="362">pod IP를 받아 pod로 바로 보내요</text>
+
+  <rect class="rule" x="725" y="385" width="210" height="110" rx="8"/>
+  <text class="eb" x="738" y="407">INGRESS · path 기반</text>
+  <text class="m b" x="738" y="427">app-ingress</text>
+  <text class="m" x="738" y="451">/app1 → app1-service</text>
+  <text class="m" x="738" y="471">/app2 → app2-service</text>
+
+  <rect class="rule" x="950" y="385" width="210" height="130" rx="8"/>
+  <text class="eb" x="963" y="407">INGRESS · host 기반</text>
+  <text class="m b" x="963" y="427">app-host-ingress</text>
+  <text class="m" x="963" y="451">app1.local → app1</text>
+  <text class="m" x="963" y="471">app2.local → app2</text>
+  <text class="s" x="963" y="495">body-size 10m · timeout 60s</text>
+
+  <rect class="rule" x="725" y="510" width="210" height="110" rx="8"/>
+  <text class="eb" x="738" y="532">INGRESS · 리다이렉트</text>
+  <text class="m b" x="738" y="552">app-redirect-ingress</text>
+  <text class="m" x="738" y="576">/api1 → 301</text>
+  <text class="s" x="738" y="598">Location: localhost/app1</text>
+
+  <!-- 요청 흐름 -->
+  <path class="flow" d="M150 195 H158" marker-end="url(#ah)"/>
+  <path class="flow" d="M270 195 H303" marker-end="url(#ah)"/>
+  <path class="flow" d="M485 180 H700 V147 H723" marker-end="url(#ah)"/>
+  <path class="flow" d="M485 210 H700 V277 H723" marker-end="url(#ah)"/>
+  <path class="flow" d="M880 147 H892 V125 H903" marker-end="url(#ah)"/>
+  <path class="flow" d="M892 147 V171 H903" marker-end="url(#ah)"/>
+  <path class="flow" d="M880 277 H892 V255 H903" marker-end="url(#ah)"/>
+  <path class="flow" d="M892 277 V301 H903" marker-end="url(#ah)"/>
+
+  <!-- 설정 읽기 -->
+  <path class="watch" d="M485 245 H610 V440 H723" marker-end="url(#ahm)"/>
+  <text class="s" x="560" y="268" text-anchor="middle">규칙 읽기 (watch)</text>
+  <text class="s" x="622" y="455">3개를 합쳐서</text>
+  <text class="s" x="622" y="471">nginx.conf 생성</text>
+
+  <!-- 범례 -->
+  <rect class="legend" x="300" y="560" width="380" height="140" rx="8"/>
+  <text class="eb" x="318" y="586">범례</text>
+  <path class="flow" d="M318 612 H368" marker-end="url(#ah)"/>
+  <text class="s" x="380" y="616">요청 흐름</text>
+  <path class="watch" d="M318 640 H368" marker-end="url(#ahm)"/>
+  <text class="s" x="380" y="644">컨트롤러가 설정을 읽는 흐름</text>
+  <rect class="port-ok" x="318" y="658" width="50" height="22" rx="11"/>
+  <text class="s" x="380" y="674">노드에 열린 포트</text>
+</svg>
