@@ -1,0 +1,8 @@
+apiVersion: v2
+name: echo-app
+description: helm 실습용 chart (http-echo 앱 + Service + Ingress)
+type: application
+# chart 자체의 버전 (템플릿을 바꾸면 올린다)
+version: 0.1.0
+# 배포하는 앱의 버전
+appVersion: "1.0.0"

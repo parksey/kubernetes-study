@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # .Release.Name: helm install 할 때 붙인 이름 → release마다 리소스 이름이 겹치지 않는다
+  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  labels:
+    app: {{ .Release.Name }}-{{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-{{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Chart.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "-text={{ .Values.message }}"
+            - "-listen=:{{ .Values.containerPort }}"
+          ports:
+            - containerPort: {{ .Values.containerPort }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.containerPort }}
+            periodSeconds: 5
+          resources:
+            # values.yaml의 resources 블록을 그대로 YAML로 넣는다
+            {{- toYaml .Values.resources | nindent 12 }}

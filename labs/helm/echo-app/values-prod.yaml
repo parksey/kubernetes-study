@@ -1,0 +1,5 @@
+# prod 환경: 기본값에서 바뀌는 것만 적는다
+replicaCount: 3
+message: "hello from helm (prod)"
+ingress:
+  path: /helm-prod

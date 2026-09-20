@@ -1,0 +1,29 @@
+# 템플릿에 들어갈 기본값. 설치할 때 -f 파일이나 --set 으로 덮어쓴다
+
+replicaCount: 2
+
+image:
+  repository: hashicorp/http-echo
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# 앱이 응답할 텍스트
+message: "hello from helm"
+
+containerPort: 5678
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: nginx
+  path: /helm
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 32Mi
+  limits:
+    memory: 64Mi

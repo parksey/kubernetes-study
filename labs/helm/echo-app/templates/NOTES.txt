@@ -1,0 +1,7 @@
+{{ .Release.Name }} 설치 완료 (revision {{ .Release.Revision }})
+
+{{- if .Values.ingress.enabled }}
+확인: curl http://192.168.49.2{{ .Values.ingress.path }}
+{{- else }}
+확인: kubectl port-forward svc/{{ .Release.Name }}-{{ .Chart.Name }} 8080:{{ .Values.service.port }}
+{{- end }}

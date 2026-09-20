@@ -1,0 +1,5 @@
+# dev 환경: 기본값에서 바뀌는 것만 적는다
+replicaCount: 1
+message: "hello from helm (dev)"
+ingress:
+  path: /helm-dev
