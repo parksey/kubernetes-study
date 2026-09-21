@@ -1,0 +1,12 @@
+replicaCount: 2
+
+image:
+  repository: docker.io/<dockerhub-user>/example-project
+  # 소스 레포의 CI가 커밋 SHA로 이 줄을 바꾼다 → ArgoCD가 변경 감지 → 배포
+  tag: "initial"
+
+containerPort: 3000
+
+service:
+  type: ClusterIP
+  port: 80

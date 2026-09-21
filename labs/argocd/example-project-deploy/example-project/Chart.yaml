@@ -1,0 +1,5 @@
+apiVersion: v2
+name: example-project
+description: example-project 배포용 chart (ArgoCD가 렌더링해서 적용)
+version: 0.1.0
+appVersion: "1.0.0"
